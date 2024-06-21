@@ -24,11 +24,13 @@ vector_store = PGVector(
 )
 
 template = """
+You are a technical assistant good at searching documents.
+In the answer try to provide as much text as possible from "response" section in the source document context without making much changes.
+If the answer is not found in the context, respond "I don't know." Don't try to make up an answer.
 Answer given the following context:
 {context}
 
 Question: {question}
-If the question asking for citation, You should use MLA format. Moreover, you also have to format the source. For example:C:\\Users\\dxkho\\OneDrive\\Desktop\\FullStack_RAG_AI\\ADVANCE_RAG_APP\\pdf-documents\\John_F_Kennedy.pdf', 'file_path': 'C:\\Users\\dxkho\\OneDrive\\Desktop\\FullStack_RAG_AI\\ADVANCE_RAG_APP\\pdf-documents\\John_F_Kennedy.pdf', 'page': 33, 'total_pages': 34, , " should become "John_F_Kennedy.pdf page:33" before convert to MLA format.
 """
 
 ANSWER_PROMPT = ChatPromptTemplate.from_template(template)

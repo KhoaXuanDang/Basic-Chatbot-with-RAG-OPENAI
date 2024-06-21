@@ -31,5 +31,5 @@ PGVector.from_documents(
     collection_name="db64", 
     connection_string=connection_string,
     #"postgresql+psycopg://postgres@localhost:5432/database164",
-    pre_delete_collection=True,#avoid overiding
+    pre_delete_collection=True,#delete all above
 )

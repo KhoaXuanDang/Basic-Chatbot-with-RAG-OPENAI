@@ -8,9 +8,18 @@ import os
 import shutil
 import subprocess
 from app.rag_chain import final_chain
+from sqlalchemy import create_engine, text
+from sqlalchemy.exc import SQLAlchemyError
+from supabase import create_client, Client
+import asyncio
 
+
+# engine = create_engine(os.getenv('DATABASE_URL'))
 
 app = FastAPI()
+url: str = os.environ.get("SUPABASE_URL")
+key: str = os.environ.get("SUPABASE_DANGEROUS_KEY")
+supabase: Client = create_client(url, key)
 
 app.add_middleware(
     CORSMiddleware,
@@ -21,6 +30,13 @@ app.add_middleware(
     allow_methods=["*"],
     allow_headers=["*"],
 )
+@app.delete("/delete-chat-history")
+async def delete_chat_history():
+    try:
+        data = supabase.table('message_store').delete().neq('id', 0).execute()
+        return {"status": "Chat history deleted successfully"}
+    except Exception as e:
+        return {"status": "Failed to delete chat history", "error": str(e)}
 
 @app.get("/")
 async def redirect_root_to_docs():

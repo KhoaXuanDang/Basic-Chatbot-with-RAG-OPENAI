@@ -13,12 +13,35 @@ function App() {
   const [inputValue, setInputValue] = useState("")
   const [messages, setMessages] = useState<Message[]>([]);
   const [selectedFiles, setSelectedFiles] = useState<FileList | null>(null);
+  const [notification, setNotification] = useState<string | null>(null);
   const sessionIdRef = useRef<string>(uuidv4());
 
   useEffect(() => {
     sessionIdRef.current = uuidv4();
   }, []);
-  
+
+  const deleteChatHistory = async () => {
+    try {
+      const response = await fetch('http://localhost:8000/delete-chat-history', {
+        method: 'DELETE',
+      });
+      if (response.ok) {
+        setNotification("Chat history deleted successfully");
+        setTimeout(() => setNotification(null), 3000); // Clear notification after 3 seconds
+      } else {
+        setNotification("Chat history deleted fail");
+        setTimeout(() => setNotification(null), 3000);
+        console.error('Failed to delete chat history');
+      }
+    } catch (error) {
+      console.error('Error deleting chat history:', error);
+    }
+  }
+
+  const handleReload = async () => {
+    await deleteChatHistory();
+    window.location.reload();
+  }
 
   const setPartialMessage = (chunk: string, sources: string[] = []) => {
     setMessages(prevMessages => {
@@ -129,9 +152,12 @@ function App() {
   };
   
   return (
+    
     <div className="min-h-screen bg-white flex flex-col">
       <header className="bg-blue-100 text-gray-800 text-center p-4 shadow-sm">
-        A Basic CHAT WITH YOUR PRIVATE PDFS Rag LLM App
+        <div className="w-4/5 text-center text-4x1">
+          Empower your organization's Business Itelligence with <span className="font-bold">Rag LLM App</span>
+        </div>
       </header>
       <main className="flex-grow container mx-auto p-4 flex-col">
         <div className="flex-grow bg-white shadow overflow-hidden sm:rounded-lg">
@@ -189,11 +215,17 @@ function App() {
                 Upload PDFs
               </button>
               <button
-                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                className="mt-2 bg-blue-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded block"
                 onClick={loadAndProcessPDFs}
               >
                 Load and Process PDFs
               </button>
+              <button 
+                className="mt-2 bg-red-600 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
+                onClick={handleReload}>
+                Delete Chat history
+              </button>
+              {notification && <div className="notification">{notification}</div>}
           </div>
         </div>
       </div>
