@@ -1,4 +1,4 @@
-# Python-Django-Ecommerce
+# Chatbot with RAG OPENAI
 
 Here’s a demo of how the project works:
 
